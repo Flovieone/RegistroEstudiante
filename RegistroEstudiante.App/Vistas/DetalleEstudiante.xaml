@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RegistroEstudiante.App.Vistas.DetallesEstudiante"
+             Title="Detalles del Estudiante">
+    <StackLayout Padding="10">
+        <Image Source="{Binding Imagen}" WidthRequest="100" HeightRequest="100"/>
+        <Label Text="{Binding Nombres}" FontSize="Large" />
+        <Label Text="{Binding PrimerApellido}" FontSize="Medium" />
+        <Label Text="{Binding SegundoApellido}" FontSize="Medium" />
+        <Label Text="{Binding CorreoElectronico}" FontSize="Medium" />
+        <Label Text="{Binding Curso}" FontSize="Medium" />
+        <Label Text="{Binding Edad}" FontSize="Medium" />
+        <Label Text="{Binding Activo, StringFormat='Activo: {0}'}" FontSize="Medium" />
+    </StackLayout>
+</ContentPage>
