@@ -1,4 +1,4 @@
-﻿using RegistroEstudiante.AppMovil.Modelos;
+﻿using RegistroEstudiante.Modelos;
 using Firebase.Database;
 using Firebase.Database.Query;
 using Microsoft.Extensions.Logging;
@@ -25,17 +25,17 @@ namespace RegistroEstudiante.AppMovil
             return builder.Build();
         }
 
-        public static void Registrar()
+        public static async void Registrar()
         {
             FirebaseClient client = new FirebaseClient("https://registrosdeestudiantes-default-rtdb.firebaseio.com/");
 
-            var cursos = client.Child("Cursos").OnceAsync<Curso>();
+            var cursos = await client.Child("Cursos").OnceAsync<Curso>();
 
-            if (cursos.Result.Count == 0)
+            if (cursos.Count == 0)
             {
-                client.Child("Cursos").PostAsync(new Curso { Nombre = "3° Medio" });
-                client.Child("Cursos").PostAsync(new Curso { Nombre = "2° Medio" });
-                client.Child("Cursos").PostAsync(new Curso { Nombre = "1° Medio" });
+                await client.Child("Cursos").PostAsync(new Curso { Nombre = "3° Medio" });
+                await client.Child("Cursos").PostAsync(new Curso { Nombre = "2° Medio" });
+                await client.Child("Cursos").PostAsync(new Curso { Nombre = "1° Medio" });
             }
         }
     }

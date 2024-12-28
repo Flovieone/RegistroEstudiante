@@ -11,3 +11,12 @@ namespace RegistroEstudiante.AppMovil.Modelos
         public required string Nombre { get; set; }
     }
 }
+
+
+namespace RegistroEstudiante.Modelos
+{
+    public class Curso
+    {
+        public required string Nombre { get; set; }
+    }
+}

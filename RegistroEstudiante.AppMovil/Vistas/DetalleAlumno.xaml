@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RegistroEstudiante.AppMovil.Vistas.DetalleAlumno"
+             Title="DetalleAlumno">
+    <VerticalStackLayout>
+        <Label Text="Detalles del Alumno"
+               FontAttributes="Bold"
+               FontSize="24"
+               HorizontalOptions="Center"
+               Margin="10"/>
+        <Label Text="Nombre Completo"
+               FontAttributes="Bold"/>
+        <Entry Text="{Binding Alumno.NombreCompleto}"
+               IsReadOnly="True"/>
+        <Label Text="Curso"
+               FontAttributes="Bold"/>
+        <Entry Text="{Binding Alumno.Curso.Nombre}"
+               IsReadOnly="True"/>
+        <Label Text="Activo"
+               FontAttributes="Bold"/>
+        <Switch IsToggled="{Binding Alumno.IsActive}"/>
+        <HorizontalStackLayout>
+            <Button Text="Guardar"
+                    Clicked="GuardarButton_Clicked"/>
+            <Button Text="Eliminar"
+                    Clicked="EliminarButton_Clicked"
+                    TextColor="Red"/>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

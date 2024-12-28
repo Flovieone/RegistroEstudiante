@@ -1,51 +1,55 @@
-using RegistroEstudiante.AppMovil.Modelos;
-using Firebase.Database;
-using Firebase.Database.Query;
+using RegistroEstudiante.Modelos;
+using Microsoft.Maui.Controls;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace RegistroEstudiante.AppMovil.Vistas;
-
-public partial class CrearAlumno : ContentPage
+namespace RegistroEstudiante.AppMovil.Vistas
 {
-    FirebaseClient client = new FirebaseClient("https://registrosdeestudiantes-default-rtdb.firebaseio.com/");
-
-    public List<Curso> Cursos { get; set; }
-
-    public CrearAlumno()
+    public partial class CrearAlumno : ContentPage
     {
-        InitializeComponent();
-        ListarCursos();
-        BindingContext = this;
-    }
+        FirebaseService firebaseService = new FirebaseService();
 
-    private void ListarCursos()
-    {
-        var cursos = client.Child("Cursos").OnceAsync<Curso>();
-        Cursos = cursos.Result.Select(x => x.Object).ToList();
-    }
+        public List<Curso> Cursos { get; set; }
 
-    private async void guardarButton_Clicked(object sender, EventArgs e)
-    {
-        Curso curso = cursoPicker.SelectedItem as Curso;
-
-        var alumno = new Alumno
+        public CrearAlumno()
         {
-            Nombres = primerNombresEntry.Text,
-            PrimerApellido = primerApellidoEntry.Text,
-            SegundoApellido = segundoApellidoEntry.Text,
-            CorreoElectronico = correoEntry.Text,
-            Edad = edadEntry.Text,
-            Curso = curso
-        };
-
-        try
-        {
-            await client.Child("Alumnos").PostAsync(alumno);
-            await DisplayAlert("Éxito", $"El Alumno {alumno.Nombres} {alumno.PrimerApellido} fue guardado correctamente", "OK");
-            await Navigation.PopAsync();
+            InitializeComponent();
+            ListarCursos();
+            BindingContext = this;
         }
-        catch (Exception ex)
+
+        private async void ListarCursos()
         {
-            await DisplayAlert("Error", ex.Message, "OK");
+            Cursos = await firebaseService.ObtenerCursos();
+            OnPropertyChanged(nameof(Cursos));
+        }
+
+        private async void guardarButton_Clicked(object sender, EventArgs e)
+        {
+            Curso curso = cursoPicker.SelectedItem as Curso;
+
+            var alumno = new Alumno
+            {
+                Nombres = primerNombresEntry.Text,
+                PrimerApellido = primerApellidoEntry.Text,
+                SegundoApellido = segundoApellidoEntry.Text,
+                CorreoElectronico = correoEntry.Text,
+                Edad = edadEntry.Text,
+                Curso = curso
+            };
+
+            try
+            {
+                await firebaseService.AgregarAlumno(alumno);
+                await DisplayAlert("Éxito", $"El Alumno {alumno.NombreCompleto} fue guardado correctamente", "OK");
+                await Navigation.PopAsync();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
     }
 }

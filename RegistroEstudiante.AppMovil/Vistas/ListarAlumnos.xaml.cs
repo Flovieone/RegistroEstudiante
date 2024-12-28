@@ -1,12 +1,12 @@
 using System.Collections.ObjectModel;
-using RegistroEstudiante.AppMovil.Modelos;
-using Firebase.Database;
+using RegistroEstudiante.Modelos;
+using System.Linq;
 
 namespace RegistroEstudiante.AppMovil.Vistas;
 
 public partial class ListarAlumnos : ContentPage
 {
-    FirebaseClient client = new FirebaseClient("https://registrosdeestudiantes-default-rtdb.firebaseio.com/");
+    FirebaseService firebaseService = new FirebaseService();
     public ObservableCollection<Alumno> Lista { get; set; } = new ObservableCollection<Alumno>();
 
     public ListarAlumnos()
@@ -16,24 +16,22 @@ public partial class ListarAlumnos : ContentPage
         CargarLista();
     }
 
-    private void CargarLista()
+    private async void CargarLista()
     {
-        client.Child("Alumnos").AsObservable<Alumno>().Subscribe((alumno) =>
+        var alumnos = await firebaseService.ObtenerAlumnos();
+        foreach (var alumno in alumnos)
         {
-            if (alumno != null)
-            {
-                Lista.Add(alumno.Object);
-            }
-        });
+            Lista.Add(alumno);
+        }
     }
 
     private void filtroSearchBar_TextChanged(object sender, TextChangedEventArgs e)
     {
         string filtro = filtroSearchBar.Text.ToLower();
 
-        if (filtro.Length > 0)
+        if (!string.IsNullOrEmpty(filtro))
         {
-            listaCollection.ItemsSource = Lista.Where(x => x.NombreCompleto.ToLower().Contains(filtro));
+            listaCollection.ItemsSource = Lista.Where(x => x.NombreCompleto.ToLower().Contains(filtro)).ToList();
         }
         else
         {
@@ -53,12 +51,7 @@ public partial class ListarAlumnos : ContentPage
 
         if (alumno != null)
         {
-            await DisplayAlert("Detalles del Alumno",
-                $"Nombre Completo: {alumno.NombreCompleto}\n" +
-                $"Correo Electrónico: {alumno.CorreoElectronico}\n" +
-                $"Edad: {alumno.Edad}\n" +
-                $"Curso: {alumno.Curso.Nombre}",
-                "OK");
+            await Navigation.PushAsync(new DetalleAlumno(alumno));
         }
     }
 }
